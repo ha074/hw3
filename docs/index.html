@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>花蓮縣中低收入戶統計</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #e9eeec;
+  --card: #fcfcfb;
+  --ink: #14201d;
+  --ink-2: #4a5a56;
+  --ink-3: #6d7c78;
+  --line: #cdd6d3;
+  --line-soft: #e3e9e7;
+  --accent: #0e5c6b;
+  --accent-ink: #ffffff;
+  --accent-soft: #d6e8ea;
+  --warn-bg: #fbeee0;
+  --warn-ink: #6b3a06;
+  --warn-line: #e8c193;
+  --focus: #0e5c6b;
+  --serif: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0f1614;
+    --card: #18211f;
+    --ink: #e8eeec;
+    --ink-2: #a5b4b0;
+    --ink-3: #85948f;
+    --line: #2f3d39;
+    --line-soft: #24302d;
+    --accent: #5db3c2;
+    --accent-ink: #0f1614;
+    --accent-soft: #1f3a3f;
+    --warn-bg: #3a2614;
+    --warn-ink: #f6d3ad;
+    --warn-line: #6b4520;
+    --focus: #8fd0db;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f1614;
+  --card: #18211f;
+  --ink: #e8eeec;
+  --ink-2: #a5b4b0;
+  --ink-3: #85948f;
+  --line: #2f3d39;
+  --line-soft: #24302d;
+  --accent: #5db3c2;
+  --accent-ink: #0f1614;
+  --accent-soft: #1f3a3f;
+  --warn-bg: #3a2614;
+  --warn-ink: #f6d3ad;
+  --warn-line: #6b4520;
+  --focus: #8fd0db;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+/* ---------- masthead ---------- */
+.masthead { padding-top: 28px; padding-bottom: 18px; }
+.masthead h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(24px, 3.2vw, 34px);
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+}
+.masthead p { margin: 6px 0 0; color: var(--ink-2); max-width: 64ch; }
+
+/* ---------- alert ---------- */
+.alert {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--warn-line);
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+  border-radius: 8px;
+}
+.alert strong { display: block; margin-bottom: 2px; }
+.alert p { margin: 0; }
+
+/* ---------- filter bar ---------- */
+.filters {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+}
+.filters .wrap {
+  display: flex; flex-wrap: wrap; align-items: flex-end;
+  gap: 12px 20px; padding-top: 12px; padding-bottom: 12px;
+}
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.flabel { font-size: 12.5px; color: var(--ink-2); font-weight: 500; }
+.field-range { flex: 1 1 220px; min-width: 200px; max-width: 320px; }
+
+/* multi-select */
+.ms { position: relative; }
+.ms > summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  min-width: 132px; max-width: 220px; height: 36px; padding: 0 10px 0 12px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+  white-space: nowrap; overflow: hidden;
+}
+.ms > summary::-webkit-details-marker { display: none; }
+.ms > summary::after {
+  content: ""; flex: none; width: 7px; height: 7px; margin-top: -3px;
+  border-right: 1.5px solid var(--ink-2); border-bottom: 1.5px solid var(--ink-2);
+  transform: rotate(45deg);
+}
+.ms[open] > summary { border-color: var(--accent); }
+.ms-val { overflow: hidden; text-overflow: ellipsis; }
+.ms-val.placeholder { color: var(--ink-3); }
+.ms-pop {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 30;
+  width: max(100%, 220px); max-height: 320px; overflow: auto;
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(20, 32, 29, .14);
+  padding: 6px;
+}
+.ms-actions { display: flex; gap: 6px; padding: 2px 2px 6px; border-bottom: 1px solid var(--line-soft); margin-bottom: 4px; }
+.ms-actions button {
+  border: 0; background: none; color: var(--accent); cursor: pointer;
+  padding: 2px 6px; border-radius: 4px; font-size: 13px;
+}
+.ms-actions button:hover { background: var(--accent-soft); }
+.ms-list label {
+  display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 4px; cursor: pointer;
+}
+.ms-list label:hover { background: var(--line-soft); }
+.ms-list input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+.ms-empty { padding: 6px 8px; color: var(--ink-3); font-size: 13px; }
+
+/* chips + segmented */
+.chips, .seg { display: flex; height: 36px; }
+.chips { gap: 6px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span {
+  display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px;
+  border: 1px solid var(--line); border-radius: 18px; background: var(--card);
+  white-space: nowrap; cursor: pointer;
+}
+.chip span::before {
+  content: ""; width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid var(--ink-3);
+}
+.chip input:checked + span { border-color: var(--accent); background: var(--accent-soft); }
+.chip input:checked + span::before {
+  background: var(--accent); border-color: var(--accent);
+  box-shadow: inset 0 0 0 2px var(--accent-soft);
+}
+.chip input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.seg { border: 1px solid var(--line); border-radius: 6px; background: var(--card); padding: 2px; }
+.seg button {
+  border: 0; background: none; padding: 0 12px; border-radius: 4px; cursor: pointer;
+  color: var(--ink-2); white-space: nowrap;
+}
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.seg.small { height: 30px; }
+.seg.small button { padding: 0 10px; font-size: 13px; }
+
+/* dual range slider */
+.range-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.range-val { font-size: 13px; color: var(--ink); font-weight: 500; }
+.range { position: relative; height: 22px; margin-top: 2px; }
+.range .track {
+  position: absolute; left: 9px; right: 9px; top: 50%; height: 4px; margin-top: -2px;
+  background: var(--line); border-radius: 2px;
+}
+.range .fill { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 2px; }
+.range input {
+  position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
+  background: none; pointer-events: none; -webkit-appearance: none; appearance: none;
+}
+.range input::-webkit-slider-runnable-track { background: none; border: 0; }
+.range input::-moz-range-track { background: none; border: 0; }
+.range input::-webkit-slider-thumb {
+  -webkit-appearance: none; pointer-events: auto; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--card); border: 2px solid var(--accent); cursor: grab; position: relative;
+}
+.range input::-moz-range-thumb {
+  pointer-events: auto; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--card); border: 2px solid var(--accent); cursor: grab;
+}
+.range input:focus-visible { outline: none; }
+.range input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--accent-soft); border-color: var(--focus); }
+.range input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--accent-soft); }
+.range input:disabled::-webkit-slider-thumb { cursor: default; border-color: var(--ink-3); }
+.ticks { position: relative; height: 16px; margin: 0 9px; font-size: 11.5px; color: var(--ink-3); }
+.ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.ticks span:first-child { transform: none; }
+.ticks span:last-child:not(:first-child) { transform: translateX(-100%); }
+
+.reset {
+  height: 36px; padding: 0 12px; border: 1px solid transparent; background: none;
+  color: var(--accent); border-radius: 6px; cursor: pointer;
+}
+.reset:hover { border-color: var(--line); background: var(--card); }
+
+/* ---------- summary (the headline that rewrites itself) ---------- */
+.summary { padding: 26px 0 22px; }
+.summary p {
+  margin: 0; max-width: 46em;
+  font-family: var(--serif); font-weight: 600;
+  font-size: clamp(18px, 2.1vw, 23px); line-height: 1.7;
+}
+.summary b { font-weight: 700; font-family: var(--sans); font-size: 1.12em; letter-spacing: .01em; }
+.summary .scope { display: block; margin-top: 6px; font-family: var(--sans); font-weight: 400; font-size: 13.5px; color: var(--ink-2); }
+
+/* ---------- cards ---------- */
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding-bottom: 32px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 16px 18px 14px; display: flex; flex-direction: column; min-width: 0;
+}
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.card h2 { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.4; }
+.card .sub { margin: 2px 0 0; font-size: 13px; color: var(--ink-2); }
+.chart-box { position: relative; height: 340px; margin-top: 8px; }
+.chart { position: absolute; inset: 0; }
+.empty {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 24px; color: var(--ink-2); background: var(--card);
+}
+.empty[hidden] { display: none; }
+.empty p { margin: 0; max-width: 30ch; }
+.note { margin: 10px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+.table-toggle { margin-top: 8px; font-size: 13px; }
+.table-toggle summary { cursor: pointer; color: var(--accent); width: fit-content; }
+.table-scroll { overflow-x: auto; margin-top: 6px; }
+.table-toggle table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.table-toggle th, .table-toggle td { padding: 4px 8px; border-bottom: 1px solid var(--line-soft); text-align: right; white-space: nowrap; }
+.table-toggle th:first-child, .table-toggle td:first-child { text-align: left; }
+.table-toggle thead th { color: var(--ink-2); font-weight: 500; }
+
+/* ---------- footer ---------- */
+footer { border-top: 1px solid var(--line); padding: 18px 0 36px; color: var(--ink-2); font-size: 13.5px; }
+footer p { margin: 4px 0; }
+footer a { color: var(--accent); }
+.repo-missing { color: var(--warn-ink); }
+
+@media (max-width: 980px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .filters { position: static; }
+}
+@media (max-width: 600px) {
+  .wrap { padding: 0 16px; }
+  .filters .wrap { flex-direction: column; align-items: stretch; }
+  .ms > summary { max-width: none; }
+  .field-range { max-width: none; }
+  .chips, .seg:not(.small) { width: 100%; }
+  .chip { flex: 1; }
+  .chip span { justify-content: center; }
+  .seg:not(.small) button { flex: 1; }
+  .chart-box { height: 300px; }
+  .card { padding: 14px 14px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<header class="wrap masthead">
+  <h1>花蓮縣中低收入戶與低收入戶統計</h1>
+  <p id="lede">各鄉鎮市區季底戶數與人數，可依性別、年齡層與季度篩選比較。</p>
+</header>
+
+<div class="wrap">
+  <div class="alert" id="alert" role="alert" hidden>
+    <strong id="alert-title"></strong>
+    <p id="alert-body"></p>
+  </div>
+</div>
+
+<section class="filters" aria-label="篩選條件">
+  <div class="wrap">
+    <div class="field">
+      <span class="flabel" id="lbl-county">縣市</span>
+      <details class="ms" id="ms-county">
+        <summary aria-labelledby="lbl-county"><span class="ms-val"></span></summary>
+        <div class="ms-pop" role="group" aria-labelledby="lbl-county">
+          <div class="ms-actions"><button type="button" data-act="all">全選</button><button type="button" data-act="none">清除</button></div>
+          <div class="ms-list"></div>
+        </div>
+      </details>
+    </div>
+    <div class="field">
+      <span class="flabel" id="lbl-town">鄉鎮市區</span>
+      <details class="ms" id="ms-town">
+        <summary aria-labelledby="lbl-town"><span class="ms-val"></span></summary>
+        <div class="ms-pop" role="group" aria-labelledby="lbl-town">
+          <div class="ms-actions"><button type="button" data-act="all">全選</button><button type="button" data-act="none">清除</button></div>
+          <div class="ms-list"></div>
+        </div>
+      </details>
+    </div>
+    <div class="field">
+      <span class="flabel" id="lbl-income">所得類別</span>
+      <div class="chips" id="income" role="group" aria-labelledby="lbl-income"></div>
+    </div>
+    <div class="field">
+      <span class="flabel" id="lbl-sex">性別</span>
+      <div class="seg" id="sex" role="group" aria-labelledby="lbl-sex">
+        <button type="button" data-v="all" aria-pressed="true">全部</button>
+        <button type="button" data-v="female" aria-pressed="false">女</button>
+        <button type="button" data-v="male" aria-pressed="false">男</button>
+      </div>
+    </div>
+    <div class="field field-range">
+      <div class="range-head"><span class="flabel" id="lbl-q">季度區間</span><span class="range-val" id="q-val"></span></div>
+      <div class="range" id="q-range">
+        <div class="track"><div class="fill"></div></div>
+        <input type="range" id="q0" aria-label="起始季度" min="0" step="1">
+        <input type="range" id="q1" aria-label="結束季度" min="0" step="1">
+      </div>
+      <div class="ticks" id="q-ticks" aria-hidden="true"></div>
+    </div>
+    <div class="field">
+      <span class="flabel" id="lbl-mode">顯示方式</span>
+      <div class="seg" id="mode" role="group" aria-labelledby="lbl-mode">
+        <button type="button" data-v="total" aria-pressed="true">合計</button>
+        <button type="button" data-v="split" aria-pressed="false">分開比較</button>
+      </div>
+    </div>
+    <button type="button" class="reset" id="reset">重設篩選</button>
+  </div>
+</section>
+
+<main class="wrap">
+  <section class="summary" aria-live="polite"><p id="summary"></p></section>
+
+  <div class="grid">
+    <article class="card" id="card-hh">
+      <div class="card-head">
+        <div><h2>戶數變化</h2><p class="sub">各季季底戶數</p></div>
+        <div class="seg small" data-chart="hh" role="group" aria-label="戶數變化圖型">
+          <button type="button" data-v="line" aria-pressed="true">折線</button>
+          <button type="button" data-v="bar" aria-pressed="false">長條</button>
+        </div>
+      </div>
+      <div class="chart-box"><div class="chart" id="chart-hh"></div><div class="empty" hidden><p></p></div></div>
+      <p class="note" id="note-hh"></p>
+      <details class="table-toggle"><summary>檢視數據表</summary><div class="table-scroll" id="table-hh"></div></details>
+    </article>
+
+    <article class="card" id="card-pp">
+      <div class="card-head">
+        <div><h2>人數變化</h2><p class="sub">各季季底人數</p></div>
+        <div class="seg small" data-chart="pp" role="group" aria-label="人數變化圖型">
+          <button type="button" data-v="line" aria-pressed="true">折線</button>
+          <button type="button" data-v="bar" aria-pressed="false">長條</button>
+        </div>
+      </div>
+      <div class="chart-box"><div class="chart" id="chart-pp"></div><div class="empty" hidden><p></p></div></div>
+      <p class="note" id="note-pp"></p>
+      <details class="table-toggle"><summary>檢視數據表</summary><div class="table-scroll" id="table-pp"></div></details>
+    </article>
+
+    <article class="card" id="card-age">
+      <div class="card-head">
+        <div><h2>不同年齡層人數分佈</h2><p class="sub">各年齡層人數與占比，依人數由高至低</p></div>
+        <div class="seg small" data-chart="age" role="group" aria-label="年齡層分佈圖型">
+          <button type="button" data-v="pie" aria-pressed="true">圓餅</button>
+          <button type="button" data-v="bar" aria-pressed="false">長條</button>
+        </div>
+      </div>
+      <div class="chart-box"><div class="chart" id="chart-age"></div><div class="empty" hidden><p></p></div></div>
+      <p class="note" id="note-age"></p>
+      <details class="table-toggle"><summary>檢視數據表</summary><div class="table-scroll" id="table-age"></div></details>
+    </article>
+
+    <article class="card" id="card-region">
+      <div class="card-head">
+        <div><h2>各地區戶數與人數比較</h2><p class="sub" id="sub-region">依人數由高至低</p></div>
+        <div class="seg small" data-chart="region" role="group" aria-label="地區比較圖型">
+          <button type="button" data-v="bar" aria-pressed="true">長條</button>
+          <button type="button" data-v="scatter" aria-pressed="false">散佈</button>
+        </div>
+      </div>
+      <div class="chart-box"><div class="chart" id="chart-region"></div><div class="empty" hidden><p></p></div></div>
+      <p class="note" id="note-region"></p>
+      <details class="table-toggle"><summary>檢視數據表</summary><div class="table-scroll" id="table-region"></div></details>
+    </article>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>資料來源：衛生福利部統計處<span id="src-file"></span></p>
+    <p id="repo"></p>
+    <p id="build-info"></p>
+  </div>
+</footer>
+
+<script src="./data.js"></script>
+<!-- ECharts 5.5.0: local copy first (works offline when double-clicked), cdnjs as fallback -->
+<script src="./vendor/echarts.min.js" onerror="window.__echartsLocalMissing = true"></script>
+<script>
+  if (typeof window.echarts === "undefined") {
+    window.__echartsSource = "cdn";
+    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js" ' +
+      'onerror="window.__echartsLoadFailed = true"><\/script>');
+  } else {
+    window.__echartsSource = "local";
+  }
+</script>
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------
+     0. Guards: data.js and ECharts
+  --------------------------------------------------------------- */
+  function showAlert(title, body) {
+    var el = document.getElementById("alert");
+    document.getElementById("alert-title").textContent = title;
+    document.getElementById("alert-body").textContent = body;
+    el.hidden = false;
+  }
+
+  var DATA = window.BI_DATA;
+  if (!DATA || !Array.isArray(DATA.records) || !DATA.records.length) {
+    showAlert("找不到資料",
+      "無法讀取 data.js。請確認 data.js 與 index.html 放在同一個 docs 資料夾，" +
+      "或在專案資料夾執行 uv run work/build_data.py 重新產生資料。");
+    document.querySelector(".filters").hidden = true;
+    document.querySelector("main").hidden = true;
+    return;
+  }
+
+  var HAS_EC = typeof window.echarts !== "undefined";
+  if (!HAS_EC) {
+    showAlert("圖表元件 ECharts 無法載入",
+      "找不到本機檔案 docs/vendor/echarts.min.js，也無法從 cdnjs.cloudflare.com 下載。" +
+      "請把 ECharts 5.5.0 的 echarts.min.js 放到 docs/vendor/ 資料夾，或連上網路後重新整理頁面；" +
+      "篩選條件、摘要與數據表仍可使用。");
+  } else if (echarts.version !== "5.5.0") {
+    showAlert("ECharts 版本不同",
+      "目前載入的 ECharts 版本是 " + echarts.version + "（來源：" +
+      (window.__echartsSource === "local" ? "docs/vendor/echarts.min.js" : "cdnjs") +
+      "），本頁以 5.5.0 製作。請換成 5.5.0 版的 echarts.min.js。");
+  }
+
+  /* ---------------------------------------------------------------
+     1. Dimensions (all derived from the data; nothing invented)
+  --------------------------------------------------------------- */
+  var META = DATA.meta || {};
+  var LABELS = META.labels || {};
+  var INCOME_LABEL = LABELS.income_type || { middle_low_income: "中低收入戶", low_income: "低收入戶" };
+  var SEX_LABEL = { all: "男女合計", male: "男", female: "女" };
+  var AGE_LABEL = LABELS.age_group || {};
+  var AGE_ORDER = (META.dimensions && META.dimensions.age_group) || [];
+  var UNIT = { households: "戶", persons: "人" };
+
+  var R = DATA.records;
+  var qMap = {};
+  R.forEach(function (r) { qMap[r.year + "-" + r.quarter] = { year: r.year, quarter: r.quarter }; });
+  var QUARTERS = Object.keys(qMap).map(function (k) { return qMap[k]; })
+    .sort(function (a, b) { return a.year - b.year || a.quarter.localeCompare(b.quarter); });
+  QUARTERS.forEach(function (q, i) {
+    q.idx = i;
+    q.label = q.year + " " + q.quarter;
+  });
+  var QIDX = {};
+  QUARTERS.forEach(function (q) { QIDX[q.year + "-" + q.quarter] = q.idx; });
+  R.forEach(function (r) {
+    r.qi = QIDX[r.year + "-" + r.quarter];
+    r.townKey = r.county + "|" + r.region;
+  });
+
+  function uniq(arr) { var s = {}, out = []; arr.forEach(function (x) { if (!s[x]) { s[x] = 1; out.push(x); } }); return out; }
+  var COUNTIES = uniq(R.map(function (r) { return r.county; }));
+  var TOWNS = uniq(R.map(function (r) { return r.townKey; })).map(function (k) {
+    var p = k.split("|"); return { key: k, county: p[0], region: p[1] };
+  });
+  var INCOMES = uniq(R.map(function (r) { return r.income_type; }));
+  var TOWN_INDEX = {}; TOWNS.forEach(function (t, i) { TOWN_INDEX[t.key] = i; });
+  var COUNTY_INDEX = {}; COUNTIES.forEach(function (c, i) { COUNTY_INDEX[c] = i; });
+
+  function townLabel(key) {
+    var p = key.split("|");
+    return COUNTIES.length > 1 ? p[0] + p[1] : p[1];
+  }
+
+  /* ---------------------------------------------------------------
+     2. State
+  --------------------------------------------------------------- */
+  function defaultState() {
+    return {
+      counties: [], towns: [], incomes: INCOMES.slice(), sex: "all",
+      q0: 0, q1: QUARTERS.length - 1, mode: "total",
+      type: state ? state.type : { hh: "line", pp: "line", age: "pie", region: "bar" }
+    };
+  }
+  var state = null;
+  state = defaultState();
+
+  /* ---------------------------------------------------------------
+     3. Filtering + aggregation
+     Records are the finest cells of the report (township x sex x age).
+     Every total on this page is a sum of those leaves; the report's own
+     總計 / 縣市 / 計 aggregates are not in data.js, so nothing is counted twice.
+  --------------------------------------------------------------- */
+  function inArea(r) {
+    if (state.towns.length) return state.towns.indexOf(r.townKey) >= 0;
+    if (state.counties.length) return state.counties.indexOf(r.county) >= 0;
+    return true;
+  }
+  function inBase(r) {
+    return state.incomes.indexOf(r.income_type) >= 0 &&
+      (state.sex === "all" || r.sex === state.sex) && inArea(r);
+  }
+  // returns { v: sum, n: number of source cells }  (n = 0 means "no data", never 0)
+  function agg(pred) {
+    var v = 0, n = 0;
+    for (var i = 0; i < R.length; i++) { if (pred(R[i])) { v += R[i].value; n++; } }
+    return { v: v, n: n };
+  }
+  function rangeQuarters() { return QUARTERS.slice(state.q0, state.q1 + 1); }
+
+  // groups for "分開比較" and the region chart
+  function groups() {
+    if (state.towns.length) {
+      return TOWNS.filter(function (t) { return state.towns.indexOf(t.key) >= 0; }).map(function (t) {
+        return { id: "t:" + t.key, name: townLabel(t.key), color: TOWN_INDEX[t.key],
+                 match: function (r) { return r.townKey === t.key; } };
+      });
+    }
+    var cs = state.counties.length ? COUNTIES.filter(function (c) { return state.counties.indexOf(c) >= 0; }) : COUNTIES;
+    return cs.map(function (c) {
+      return { id: "c:" + c, name: c, color: COUNTY_INDEX[c], match: function (r) { return r.county === c; } };
+    });
+  }
+  function groupLevelName() {
+    if (state.towns.length) return "鄉鎮市區";
+    return "縣市";
+  }
+
+  /* ---------------------------------------------------------------
+     4. Wording helpers
+  --------------------------------------------------------------- */
+  var fmt = function (n) { return n == null ? "—" : Number(n).toLocaleString("zh-TW"); };
+  function incomeText() {
+    if (!state.incomes.length) return "未選所得類別";
+    var names = INCOMES.filter(function (k) { return state.incomes.indexOf(k) >= 0; })
+      .map(function (k) { return INCOME_LABEL[k] || k; });
+    return names.length > 1 ? names.join("＋") + "（合計）" : names[0];
+  }
+  function areaText() {
+    if (state.towns.length) {
+      var names = TOWNS.filter(function (t) { return state.towns.indexOf(t.key) >= 0; }).map(function (t) { return townLabel(t.key); });
+      return names.length > 4 ? names.slice(0, 3).join("、") + " 等 " + names.length + " 個鄉鎮市區" : names.join("、");
+    }
+    if (state.counties.length) return state.counties.join("、") + "（全部鄉鎮市區）";
+    return COUNTIES.join("、") + "（全部鄉鎮市區）";
+  }
+  function rangeText() {
+    var a = QUARTERS[state.q0].label, b = QUARTERS[state.q1].label;
+    return a === b ? a : a + "～" + b;
+  }
+  function scopeLine() {
+    return incomeText() + "｜" + SEX_LABEL[state.sex] + "｜" + areaText();
+  }
+
+  /* ---------------------------------------------------------------
+     5. Theme + colors (validated categorical palette; age = ordinal ramp)
+  --------------------------------------------------------------- */
+  var CAT = {
+    light: ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"],
+    dark:  ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"]
+  };
+  var AGE_RAMP = { light: ["#86b6ef", "#3987e5", "#1c5cab", "#0d366b"], dark: ["#cde2fb", "#86b6ef", "#3987e5", "#1c5cab"] };
+  var darkMQ = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  function isDark() {
+    var t = document.documentElement.getAttribute("data-theme");
+    if (t === "dark") return true;
+    if (t === "light") return false;
+    return !!(darkMQ && darkMQ.matches);
+  }
+  function theme() {
+    var cs = getComputedStyle(document.documentElement);
+    var g = function (n) { return cs.getPropertyValue(n).trim(); };
+    var mode = isDark() ? "dark" : "light";
+    return { mode: mode, cat: CAT[mode], age: AGE_RAMP[mode], card: g("--card"), ink: g("--ink"),
+             ink2: g("--ink-2"), ink3: g("--ink-3"), line: g("--line"), soft: g("--line-soft") };
+  }
+  // >8 series: colors repeat by entity index, so a second visual channel
+  // (dashed line / hatched bar / different marker) keeps identity unambiguous.
+  function seriesColor(T, idx) { return T.cat[idx % T.cat.length]; }
+  var MARKERS = ["circle", "rect", "triangle", "diamond"];
+
+  function baseOption(T) {
+    return {
+      backgroundColor: "transparent",
+      textStyle: { fontFamily: getComputedStyle(document.body).fontFamily, color: T.ink2 },
+      animationDuration: 500,
+      animationDurationUpdate: 650,
+      animationEasingUpdate: "cubicInOut",
+      tooltip: {
+        backgroundColor: T.card, borderColor: T.line, borderWidth: 1,
+        textStyle: { color: T.ink, fontSize: 13 }, extraCssText: "box-shadow:0 6px 18px rgba(0,0,0,.12);border-radius:6px;"
+      }
+    };
+  }
+  function chartWidth(key) { return document.getElementById("chart-" + key).clientWidth || 560; }
+  function titleOpt(T, text, key) {
+    return { text: text, left: 0, top: 0,
+             textStyle: { fontSize: 12.5, fontWeight: 500, color: T.ink2, width: Math.max(160, chartWidth(key) - 8), overflow: "truncate" } };
+  }
+  // estimate how many rows a plain (wrapping) legend needs, so the plot starts below it
+  function legendRows(key, names) {
+    var w = chartWidth(key), x = 0, rows = 1;
+    names.forEach(function (n) {
+      var tw = 0; for (var i = 0; i < n.length; i++) tw += n.charCodeAt(i) > 255 ? 12 : 7;
+      var iw = 14 + 5 + tw + 12;
+      if (x && x + iw > w) { rows++; x = 0; }
+      x += iw;
+    });
+    return rows;
+  }
+  function legendTop(key, names) { return 22 + legendRows(key, names) * 20 + 20; }
+  function axisCommon(T) {
+    return {
+      axisLine: { lineStyle: { color: T.line } }, axisTick: { show: false },
+      axisLabel: { color: T.ink2, fontSize: 12 }, nameTextStyle: { color: T.ink2, fontSize: 12 },
+      splitLine: { lineStyle: { color: T.soft, type: "solid" } }
+    };
+  }
+  function merge(a, b) { var o = {}, k; for (k in a) o[k] = a[k]; for (k in b) o[k] = b[k]; return o; }
+
+  /* ---------------------------------------------------------------
+     6. Charts
+  --------------------------------------------------------------- */
+  var charts = {};
+  function getChart(key) {
+    if (!HAS_EC) return null;
+    if (!charts[key]) {
+      var el = document.getElementById("chart-" + key);
+      charts[key] = echarts.init(el, null, { renderer: "canvas" });
+      if (window.ResizeObserver) new ResizeObserver(function () { charts[key].resize(); }).observe(el);
+    }
+    return charts[key];
+  }
+  function setEmpty(key, message) {
+    var box = document.querySelector("#chart-" + key).parentNode;
+    var e = box.querySelector(".empty");
+    if (message) { e.querySelector("p").textContent = message; e.hidden = false; }
+    else e.hidden = true;
+    var c = getChart(key);
+    if (c && message) c.clear();
+    return !!message;
+  }
+  function emptyReason() {
+    if (!state.incomes.length) return "沒有選擇所得類別。請在上方至少勾選一個所得類別。";
+    return "目前的篩選條件沒有資料。請放寬地區、性別或季度區間。";
+  }
+  function noEcharts(key) {
+    var box = document.querySelector("#chart-" + key).parentNode;
+    var e = box.querySelector(".empty");
+    e.querySelector("p").textContent = "ECharts 未載入，無法繪製圖表。請連上網路後重新整理，或展開下方數據表查看數值。";
+    e.hidden = false;
+  }
+  function table(id, head, rows) {
+    var h = "<table><thead><tr>" + head.map(function (x) { return "<th scope=\"col\">" + esc(x) + "</th>"; }).join("") + "</tr></thead><tbody>";
+    rows.forEach(function (r) {
+      h += "<tr>" + r.map(function (x, i) { return i === 0 ? "<th scope=\"row\">" + esc(x) + "</th>" : "<td>" + esc(x) + "</td>"; }).join("") + "</tr>";
+    });
+    document.getElementById(id).innerHTML = h + "</tbody></table>";
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]; }); }
+
+  // ---- 1 & 2: trend charts ----
+  function trendSeries(measure) {
+    var qs = rangeQuarters();
+    var list;
+    if (state.mode === "total") {
+      list = [{ id: measure + ":all", name: incomeText(), color: 0,
+                match: function () { return true; } }];
+    } else {
+      list = groups();
+    }
+    var any = false;
+    var out = list.map(function (g) {
+      var data = qs.map(function (q) {
+        var a = agg(function (r) { return r.measure === measure && r.qi === q.idx && inBase(r) && g.match(r); });
+        if (a.n) any = true;
+        return a.n ? a.v : null;
+      });
+      return { id: measure + ":" + g.id, name: g.name, color: g.color, data: data };
+    });
+    return { quarters: qs, series: out, any: any };
+  }
+
+  function renderTrend(key, measure) {
+    var t = trendSeries(measure);
+    var unit = UNIT[measure];
+    var label = measure === "households" ? "戶數" : "人數";
+    // table
+    var head = ["數列"].concat(t.quarters.map(function (q) { return q.label; }));
+    table("table-" + key, head, t.any ? t.series.map(function (s) { return [s.name].concat(s.data.map(fmt)); }) : []);
+    document.getElementById("note-" + key).textContent =
+      "數值為各季季底" + label + "；" + (state.mode === "total"
+        ? "合計＝符合條件的鄉鎮市區明細加總。"
+        : "每個" + groupLevelName() + "一條數列，縣市數值由所屬鄉鎮市區明細加總。") +
+      (state.sex === "all" ? "性別「全部」＝男＋女明細相加。" : "");
+    if (!t.any) { setEmpty(key, emptyReason()); return; }
+    if (!HAS_EC) { noEcharts(key); return; }
+    setEmpty(key, null);
+
+    var T = theme(), type = state.type[key], many = t.series.length > T.cat.length;
+    var opt = merge(baseOption(T), {
+      title: titleOpt(T, scopeLine(), key),
+      legend: { type: "plain", top: 22, left: 0, right: 0, itemGap: 12, itemWidth: 14, itemHeight: 10,
+                icon: type === "bar" ? "roundRect" : null, textStyle: { color: T.ink2, fontSize: 12 } },
+      grid: { left: 28, right: 18, top: legendTop(key, t.series.map(function (s) { return s.name; })), bottom: 30, containLabel: true },
+      tooltip: merge(baseOption(T).tooltip, {
+        trigger: "axis", axisPointer: { type: type === "line" ? "line" : "shadow", lineStyle: { color: T.ink3 } },
+        valueFormatter: function (v) { return v == null ? "無資料" : fmt(v) + " " + unit; }
+      }),
+      xAxis: merge(axisCommon(T), { type: "category", name: "季度", nameLocation: "middle", nameGap: 28,
+        boundaryGap: true, data: t.quarters.map(function (q) { return q.label; }), splitLine: { show: false } }),
+      yAxis: merge(axisCommon(T), { type: "value", name: label + "（" + unit + "）", nameLocation: "middle", nameGap: 54, nameRotate: 90,
+        axisLabel: { color: T.ink2, fontSize: 12, hideOverlap: true, formatter: function (v) { return fmt(v); } } }),
+      series: t.series.map(function (s, i) {
+        var c = seriesColor(T, s.color), extra = many && s.color >= T.cat.length;
+        var base = { id: s.id, name: s.name, type: type, data: s.data, universalTransition: { enabled: true },
+                     emphasis: { focus: "series" } };
+        if (type === "line") {
+          return merge(base, { color: c, symbol: MARKERS[Math.floor(s.color / T.cat.length) % MARKERS.length], symbolSize: 8,
+            lineStyle: { width: 2, color: c, type: extra ? "dashed" : "solid" },
+            itemStyle: { color: c, borderColor: T.card, borderWidth: 2 }, connectNulls: false,
+            endLabel: t.series.length <= 4 ? { show: true, color: T.ink, fontSize: 12, formatter: function (p) { return fmt(p.value); } } : { show: false } });
+        }
+        return merge(base, { color: c, barMaxWidth: 34, barGap: "12%",
+          itemStyle: { color: c, borderRadius: [4, 4, 0, 0], borderColor: T.card, borderWidth: 1,
+            decal: extra ? { symbol: "rect", dashArrayX: [1, 0], dashArrayY: [2, 4], rotation: -Math.PI / 4, color: "rgba(255,255,255,.55)" } : null } });
+      })
+    });
+    if (type === "line" && t.series.length <= 4) opt.grid.right = 56;
+    getChart(key).setOption(opt, { notMerge: true });
+  }
+
+  // ---- 3: age distribution (persons, last quarter of the range) ----
+  function renderAge() {
+    var qEnd = QUARTERS[state.q1];
+    var rows = AGE_ORDER.map(function (a, i) {
+      var g = agg(function (r) { return r.measure === "persons" && r.age_group === a && r.qi === qEnd.idx && inBase(r); });
+      return { key: a, name: AGE_LABEL[a] || a, value: g.v, n: g.n, order: i };
+    }).filter(function (d) { return d.n > 0; });
+    var total = rows.reduce(function (s, d) { return s + d.value; }, 0);
+    rows.sort(function (a, b) { return b.value - a.value || a.order - b.order; });
+    var pct = function (v) { return total ? (v / total * 100).toFixed(1) + "%" : "—"; };
+
+    table("table-age", ["年齡層", "人數", "占比"], rows.map(function (d) { return [d.name, fmt(d.value), pct(d.value)]; }));
+    document.getElementById("note-age").textContent =
+      "取季度區間最後一季（" + qEnd.label + "）的季底人數；季底人數跨季相加會重複計算同一人，所以不加總各季。" +
+      "年齡層依原始報表：未滿12歲、12-17歲、18-64歲、65歲以上。此圖固定為合計，不受顯示方式影響。";
+
+    if (!AGE_ORDER.length) { setEmpty("age", "原始報表沒有年齡層分類，無法顯示此圖。"); return; }
+    if (!rows.length) { setEmpty("age", emptyReason()); return; }
+    if (!HAS_EC) { noEcharts("age"); return; }
+    setEmpty("age", null);
+
+    var T = theme(), type = state.type.age;
+    var colorOf = function (d) { return T.age[d.order % T.age.length]; };
+    var tip = merge(baseOption(T).tooltip, { trigger: "item",
+      formatter: function (p) { return p.marker + esc(p.name) + "<br><b>" + fmt(p.value) + " 人</b>（" + pct(p.value) + "）"; } });
+    var opt = merge(baseOption(T), {
+      title: titleOpt(T, scopeLine() + "｜" + qEnd.label, "age"),
+      tooltip: tip,
+      legend: { top: 22, left: 0, right: 0, data: rows.map(function (d) { return { name: d.name, itemStyle: { color: colorOf(d) } }; }),
+                textStyle: { color: T.ink2, fontSize: 12 }, itemWidth: 12, itemHeight: 12, icon: "roundRect",
+                selectedMode: type === "pie" }
+    });
+    var data = rows.map(function (d) {
+      return { name: d.name, value: d.value, itemStyle: { color: colorOf(d), borderColor: T.card, borderWidth: 2,
+               borderRadius: type === "bar" ? [4, 4, 0, 0] : 4 } };
+    });
+    if (type === "pie") {
+      var narrow = chartWidth("age") < 480;
+      opt.series = [{ id: "age", name: "人數", type: "pie", radius: ["0%", narrow ? "52%" : "64%"], center: ["50%", "60%"],
+        data: data, universalTransition: { enabled: true },
+        label: { color: T.ink, fontSize: 12, alignTo: narrow ? "edge" : "none", edgeDistance: 4, minMargin: 4, overflow: "none",
+                 formatter: function (p) { return p.name + "\n" + pct(p.value); } },
+        labelLine: { lineStyle: { color: T.ink3 } } }];
+    } else {
+      opt.grid = { left: 28, right: 12, top: legendTop("age", rows.map(function (d) { return d.name; })), bottom: 30, containLabel: true };
+      opt.xAxis = merge(axisCommon(T), { type: "category", name: "年齡層", nameLocation: "middle", nameGap: 28, data: rows.map(function (d) { return d.name; }), splitLine: { show: false } });
+      opt.yAxis = merge(axisCommon(T), { type: "value", name: "人數（人）", nameLocation: "middle", nameGap: 54, nameRotate: 90,
+        axisLabel: { color: T.ink2, fontSize: 12, hideOverlap: true, formatter: function (v) { return fmt(v); } } });
+      opt.series = [{ id: "age", name: "人數", type: "bar", data: data, barMaxWidth: 56, universalTransition: { enabled: true },
+        colorBy: "data",
+        label: { show: true, position: "top", color: T.ink2, fontSize: 12, formatter: function (p) { return pct(p.value); } } }]
+        // legend-only entries (no data) so each age band keeps a legend swatch in bar mode
+        .concat(rows.map(function (d) {
+          return { id: "age-legend-" + d.key, name: d.name, type: "line", data: [], silent: true,
+                   itemStyle: { color: colorOf(d) }, lineStyle: { color: colorOf(d) }, tooltip: { show: false } };
+        }));
+    }
+    getChart("age").setOption(opt, { notMerge: true });
+  }
+
+  // ---- 4: region comparison (households & persons, last quarter) ----
+  function renderRegion() {
+    var qEnd = QUARTERS[state.q1];
+    var rows = groups().map(function (g) {
+      var hh = agg(function (r) { return r.measure === "households" && r.qi === qEnd.idx && inBase(r) && g.match(r); });
+      var pp = agg(function (r) { return r.measure === "persons" && r.qi === qEnd.idx && inBase(r) && g.match(r); });
+      return { name: g.name, hh: hh.n ? hh.v : null, pp: pp.n ? pp.v : null };
+    }).filter(function (d) { return d.hh != null && d.pp != null; });
+    rows.sort(function (a, b) { return b.pp - a.pp; });
+
+    document.getElementById("sub-region").textContent = "以" + groupLevelName() + "為單位，依人數由高至低";
+    table("table-region", [groupLevelName(), "戶數", "人數"], rows.map(function (d) { return [d.name, fmt(d.hh), fmt(d.pp)]; }));
+    document.getElementById("note-region").textContent =
+      "統計範圍：" + incomeText() + "｜" + areaText() + "｜" + SEX_LABEL[state.sex] + "｜季度區間 " + rangeText() +
+      "，數值取最後一季 " + qEnd.label + " 的季底數（戶數與人數為同一季、同一範圍）。" +
+      "縣市數值由所屬鄉鎮市區明細加總，未使用報表的縣市合計列。此圖固定以地區比較，不受顯示方式影響。";
+
+    if (!rows.length) { setEmpty("region", emptyReason()); return; }
+    if (!HAS_EC) { noEcharts("region"); return; }
+    setEmpty("region", null);
+
+    var T = theme(), type = state.type.region, c = T.cat[0];
+    var maxPP = Math.max.apply(null, rows.map(function (d) { return d.pp; })) || 1;
+    var tip = merge(baseOption(T).tooltip, { trigger: "item",
+      formatter: function (p) {
+        var d = rows[p.dataIndex];
+        return esc(d.name) + "<br>戶數 <b>" + fmt(d.hh) + " 戶</b><br>人數 <b>" + fmt(d.pp) + " 人</b>";
+      } });
+    var opt = merge(baseOption(T), {
+      title: titleOpt(T, scopeLine() + "｜" + qEnd.label, "region"),
+      tooltip: tip,
+      legend: { top: 22, left: 0, data: [type === "bar" ? "人數" : "地區（泡泡大小＝人數）"], textStyle: { color: T.ink2, fontSize: 12 },
+                itemWidth: 12, itemHeight: 12, icon: type === "bar" ? "roundRect" : "circle" }
+    });
+    if (type === "bar") {
+      opt.grid = { left: 28, right: 52, top: 64, bottom: 30, containLabel: true };
+      opt.yAxis = merge(axisCommon(T), { type: "category", inverse: true, name: groupLevelName(), nameLocation: "middle", nameGap: 62, nameRotate: 90,
+        data: rows.map(function (d) { return d.name; }), splitLine: { show: false } });
+      opt.xAxis = merge(axisCommon(T), { type: "value", name: "人數（人）", nameLocation: "middle", nameGap: 28,
+        splitNumber: chartWidth("region") < 480 ? 3 : 5,
+        axisLabel: { color: T.ink2, fontSize: 12, hideOverlap: true, formatter: function (v) { return fmt(v); } } });
+      opt.series = [{ id: "region", name: "人數", type: "bar", barMaxWidth: 22, universalTransition: { enabled: true },
+        data: rows.map(function (d) { return { name: d.name, value: d.pp }; }),
+        itemStyle: { color: c, borderRadius: [0, 4, 4, 0] },
+        label: { show: true, position: "right", color: T.ink2, fontSize: 12, formatter: function (p) { return fmt(p.value); } } }];
+    } else {
+      opt.grid = { left: 28, right: 36, top: 70, bottom: 30, containLabel: true };
+      opt.xAxis = merge(axisCommon(T), { type: "value", name: "戶數（戶）", nameLocation: "middle", nameGap: 28, scale: true,
+        splitNumber: chartWidth("region") < 480 ? 3 : 5,
+        axisLabel: { color: T.ink2, fontSize: 12, hideOverlap: true, formatter: function (v) { return fmt(v); } } });
+      opt.yAxis = merge(axisCommon(T), { type: "value", name: "人數（人）", nameLocation: "middle", nameGap: 54, nameRotate: 90, scale: true,
+        axisLabel: { color: T.ink2, fontSize: 12, hideOverlap: true, formatter: function (v) { return fmt(v); } } });
+      opt.series = [{ id: "region", name: "地區（泡泡大小＝人數）", type: "scatter", universalTransition: { enabled: true },
+        data: rows.map(function (d) { return { name: d.name, value: [d.hh, d.pp] }; }),
+        symbolSize: function (v) { return 10 + 34 * Math.sqrt(v[1] / maxPP); },
+        itemStyle: { color: c, opacity: 0.78, borderColor: T.card, borderWidth: 2 },
+        label: { show: rows.length <= 14, position: "right", color: T.ink, fontSize: 11.5, formatter: function (p) { return p.name; } },
+        labelLayout: { hideOverlap: true } }];
+    }
+    getChart("region").setOption(opt, { notMerge: true });
+  }
+
+  // ---- summary sentence (the page's live headline) ----
+  function renderSummary() {
+    var el = document.getElementById("summary");
+    var q1 = QUARTERS[state.q1], q0 = QUARTERS[state.q0];
+    var at = function (m, qi) { return agg(function (r) { return r.measure === m && r.qi === qi && inBase(r); }); };
+    var h1 = at("households", q1.idx), p1 = at("persons", q1.idx);
+    if (!h1.n && !p1.n) {
+      el.innerHTML = "目前的篩選條件沒有資料。<span class=\"scope\">" + esc(emptyReason()) + "</span>";
+      return;
+    }
+    var s = esc(q1.label) + " 季底，共有 <b>" + fmt(h1.v) + "</b> 戶、<b>" + fmt(p1.v) + "</b> 人";
+    if (state.q0 !== state.q1) {
+      var h0 = at("households", q0.idx), p0 = at("persons", q0.idx);
+      if (h0.n && p0.n) {
+        var d = function (now, before, unit) {
+          var diff = now - before;
+          if (diff === 0) return "持平";
+          var p = before ? "（" + (diff > 0 ? "+" : "−") + Math.abs(diff / before * 100).toFixed(1) + "%）" : "";
+          return (diff > 0 ? "增加 " : "減少 ") + "<b>" + fmt(Math.abs(diff)) + "</b> " + unit + p;
+        };
+        s += "；與 " + esc(q0.label) + " 相比，戶數" + d(h1.v, h0.v, "戶") + "，人數" + d(p1.v, p0.v, "人");
+      }
+    }
+    el.innerHTML = s + "。<span class=\"scope\">" + esc(scopeLine()) + "</span>";
+  }
+
+  function renderAll() {
+    renderSummary();
+    renderTrend("hh", "households");
+    renderTrend("pp", "persons");
+    renderAge();
+    renderRegion();
+  }
+
+  /* ---------------------------------------------------------------
+     7. Controls
+  --------------------------------------------------------------- */
+  function multiSelect(rootId, getOptions, getSel, setSel) {
+    var root = document.getElementById(rootId);
+    var list = root.querySelector(".ms-list"), val = root.querySelector(".ms-val");
+    function paint() {
+      var opts = getOptions(), sel = getSel();
+      list.innerHTML = opts.length ? "" : "<div class=\"ms-empty\">沒有可選項目</div>";
+      opts.forEach(function (o) {
+        var lab = document.createElement("label");
+        var cb = document.createElement("input");
+        cb.type = "checkbox"; cb.value = o.value; cb.checked = sel.indexOf(o.value) >= 0;
+        cb.addEventListener("change", function () {
+          var cur = getSel().slice();
+          if (cb.checked) { if (cur.indexOf(o.value) < 0) cur.push(o.value); }
+          else cur = cur.filter(function (x) { return x !== o.value; });
+          var order = getOptions().map(function (x) { return x.value; });
+          cur.sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
+          setSel(cur);
+        });
+        lab.appendChild(cb);
+        lab.appendChild(document.createTextNode(o.label));
+        list.appendChild(lab);
+      });
+      if (!sel.length) { val.textContent = "全部"; val.classList.add("placeholder"); }
+      else {
+        val.classList.remove("placeholder");
+        var labels = opts.filter(function (o) { return sel.indexOf(o.value) >= 0; }).map(function (o) { return o.label; });
+        val.textContent = labels.length <= 2 ? labels.join("、") : "已選 " + labels.length + " 個";
+      }
+      root.querySelector("summary").setAttribute("title", sel.length ? val.textContent : "未選擇＝全部");
+    }
+    root.querySelector("[data-act=all]").addEventListener("click", function () { setSel(getOptions().map(function (o) { return o.value; })); });
+    root.querySelector("[data-act=none]").addEventListener("click", function () { setSel([]); });
+    root.addEventListener("toggle", function () {
+      if (root.open) document.querySelectorAll("details.ms[open]").forEach(function (d) { if (d !== root) d.open = false; });
+    });
+    return { paint: paint };
+  }
+
+  var msCounty = multiSelect("ms-county",
+    function () { return COUNTIES.map(function (c) { return { value: c, label: c }; }); },
+    function () { return state.counties; },
+    function (v) {
+      state.counties = v;
+      // keep only towns that belong to the selected counties
+      if (v.length) state.towns = state.towns.filter(function (k) { return v.indexOf(k.split("|")[0]) >= 0; });
+      paintControls(); renderAll();
+    });
+  var msTown = multiSelect("ms-town",
+    function () {
+      return TOWNS.filter(function (t) { return !state.counties.length || state.counties.indexOf(t.county) >= 0; })
+        .map(function (t) { return { value: t.key, label: townLabel(t.key) }; });
+    },
+    function () { return state.towns; },
+    function (v) { state.towns = v; paintControls(); renderAll(); });
+
+  document.addEventListener("click", function (e) {
+    // composedPath() is fixed at dispatch time, so it still holds the popup even
+    // after a checkbox click re-rendered the list and detached e.target.
+    var path = e.composedPath ? e.composedPath() : [];
+    document.querySelectorAll("details.ms[open]").forEach(function (d) {
+      if (path.indexOf(d) < 0 && !d.contains(e.target)) d.open = false;
+    });
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") document.querySelectorAll("details.ms[open]").forEach(function (d) { d.open = false; d.querySelector("summary").focus(); });
+  });
+
+  // income chips
+  var incomeBox = document.getElementById("income");
+  INCOMES.forEach(function (k) {
+    var lab = document.createElement("label"); lab.className = "chip";
+    lab.innerHTML = "<input type=\"checkbox\" value=\"" + esc(k) + "\"><span>" + esc(INCOME_LABEL[k] || k) + "</span>";
+    lab.querySelector("input").addEventListener("change", function () {
+      state.incomes = INCOMES.filter(function (x) { return incomeBox.querySelector("input[value=\"" + x + "\"]").checked; });
+      renderAll();
+    });
+    incomeBox.appendChild(lab);
+  });
+
+  // segmented controls
+  function seg(id, get, set) {
+    var root = typeof id === "string" ? document.getElementById(id) : id;
+    root.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () { set(b.getAttribute("data-v")); paintSeg(root, get()); });
+    });
+    return function () { paintSeg(root, get()); };
+  }
+  function paintSeg(root, v) {
+    root.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-v") === v)); });
+  }
+  var paintSex = seg("sex", function () { return state.sex; }, function (v) { state.sex = v; renderAll(); });
+  var paintMode = seg("mode", function () { return state.mode; }, function (v) { state.mode = v; renderAll(); });
+  var typePainters = [];
+  document.querySelectorAll(".seg[data-chart]").forEach(function (root) {
+    var key = root.getAttribute("data-chart");
+    typePainters.push(seg(root, function () { return state.type[key]; }, function (v) {
+      state.type[key] = v;
+      ({ hh: function () { renderTrend("hh", "households"); }, pp: function () { renderTrend("pp", "persons"); },
+         age: renderAge, region: renderRegion })[key]();
+    }));
+  });
+
+  // quarter range slider (only quarters that exist in the data)
+  var q0El = document.getElementById("q0"), q1El = document.getElementById("q1");
+  var maxQ = QUARTERS.length - 1;
+  [q0El, q1El].forEach(function (el) { el.max = String(maxQ); el.disabled = maxQ === 0; });
+  var ticks = document.getElementById("q-ticks");
+  QUARTERS.forEach(function (q) {
+    var s = document.createElement("span");
+    s.textContent = q.label;
+    s.style.left = maxQ ? (q.idx / maxQ * 100) + "%" : "0%";
+    ticks.appendChild(s);
+  });
+  function paintRange() {
+    q0El.value = String(state.q0); q1El.value = String(state.q1);
+    q0El.setAttribute("aria-valuetext", QUARTERS[state.q0].label);
+    q1El.setAttribute("aria-valuetext", QUARTERS[state.q1].label);
+    var fill = document.querySelector("#q-range .fill");
+    fill.style.left = maxQ ? (state.q0 / maxQ * 100) + "%" : "0%";
+    fill.style.right = maxQ ? (100 - state.q1 / maxQ * 100) + "%" : "0%";
+    // when both thumbs sit at the right end, keep the start thumb on top so it can still move
+    q0El.style.zIndex = state.q0 === maxQ ? "3" : "2";
+    document.getElementById("q-val").textContent = rangeText() + (maxQ === 0 ? "（資料只有一季）" : "");
+  }
+  q0El.addEventListener("input", function () {
+    var v = +q0El.value; if (v > state.q1) v = state.q1; state.q0 = v; paintRange(); renderAll();
+  });
+  q1El.addEventListener("input", function () {
+    var v = +q1El.value; if (v < state.q0) v = state.q0; state.q1 = v; paintRange(); renderAll();
+  });
+
+  document.getElementById("reset").addEventListener("click", function () {
+    state = defaultState(); paintControls(); renderAll();
+  });
+
+  function paintControls() {
+    msCounty.paint(); msTown.paint();
+    incomeBox.querySelectorAll("input").forEach(function (cb) { cb.checked = state.incomes.indexOf(cb.value) >= 0; });
+    paintSex(); paintMode(); typePainters.forEach(function (p) { p(); }); paintRange();
+  }
+
+  /* ---------------------------------------------------------------
+     8. Static text: lede, footer
+  --------------------------------------------------------------- */
+  document.getElementById("lede").textContent =
+    COUNTIES.join("、") + "各鄉鎮市區 " + QUARTERS[0].label + (maxQ ? "～" + QUARTERS[maxQ].label : "") +
+    " 季底戶數與人數，可依所得類別、性別、年齡層與季度篩選比較。";
+  if (META.source) document.getElementById("src-file").textContent = "（原始報表：" + META.source + "）";
+  var repo = document.getElementById("repo");
+  if (META.repo_url && /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+$/.test(META.repo_url)) {
+    repo.innerHTML = "原始資料與程式：<a href=\"" + esc(META.repo_url) + "\" target=\"_blank\" rel=\"noopener\">" + esc(META.repo_url.replace("https://", "")) + "</a>";
+  } else {
+    repo.className = "repo-missing";
+    repo.textContent = "GitHub repository 尚未設定" + (META.repo_missing_reason ? "（" + META.repo_missing_reason + "）" : "") +
+      "。在專案資料夾設定 git remote 後，重新執行 uv run work/build_data.py，這裡就會顯示連結。";
+  }
+  if (META.generated_at) {
+    var d = new Date(META.generated_at);
+    document.getElementById("build-info").textContent = "資料檔產生時間：" +
+      (isNaN(d) ? META.generated_at : d.toLocaleString("zh-TW", { hour12: false })) + "；共 " + fmt(R.length) + " 筆明細。";
+  }
+  document.getElementById("build-info").textContent += HAS_EC
+    ? "圖表元件：ECharts " + echarts.version + "（" + (window.__echartsSource === "local" ? "本機 docs/vendor/echarts.min.js" : "cdnjs.cloudflare.com") + "）。"
+    : "圖表元件：未載入。";
+
+  /* ---------------------------------------------------------------
+     9. Go
+  --------------------------------------------------------------- */
+  paintControls();
+  renderAll();
+  if (darkMQ && darkMQ.addEventListener) darkMQ.addEventListener("change", renderAll);
+
+  // test hook (read-only): lets the verification script compare page numbers with data.js
+  window.__bi = { state: function () { return JSON.parse(JSON.stringify(state)); },
+                  charts: charts, quarters: QUARTERS };
+})();
+</script>
+</body>
+</html>
